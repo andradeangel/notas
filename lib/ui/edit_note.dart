@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notas/ui/note_page.dart';
 import '../model/note.dart';
 import '../note_db/note_db.dart';
 import '../widget/nota_form_widget.dart';
@@ -95,15 +96,17 @@ class _EditNoteState extends State<EditNote> {
           primary: Colors.teal,
         ),
         child: Text(widget.note != null ? 'Editar' : 'Guardar'),
-        onPressed: () {
+        onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (widget.note != null) {
               updateNote();
             } else {
               addNotes();
             }
-            Navigator.of(context).pop();
           }
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => NotesPage()),
+          );
         },
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notas/ui/note_page.dart';
 import '../model/note.dart';
 import '../note_db/note_db.dart';
 
@@ -40,8 +41,9 @@ class _DeleteNoteState extends State<DeleteNote> {
                 primary: Colors.red,
               ),
               child: Text('Eliminar Nota'),
-              onPressed: () {
+              onPressed: () async {
                 deleteNote();
+
               },
             ),
           ],
@@ -53,6 +55,9 @@ class _DeleteNoteState extends State<DeleteNote> {
     if (widget.note != null) {
       await NotesDatabase.instance.delete(widget.note!.id!);
     }
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => NotesPage()),
+    );
     Navigator.of(context).pop();
   }
   late Note note;
