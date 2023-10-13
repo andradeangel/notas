@@ -5,7 +5,6 @@ class NoteFormWidget extends StatelessWidget {
   final int? number;
   final String? title;
   final String? description;
-  //ValueChanged  informa que un valor ha cambiado.
   final ValueChanged<bool> onChangedImportant;
   final ValueChanged<int> onChangedNumber;
   final ValueChanged<String> onChangedTitle;

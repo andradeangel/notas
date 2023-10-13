@@ -5,7 +5,6 @@ import '../widget/nota_form_widget.dart';
 
 class EditNote extends StatefulWidget {
   final Note? note;
-
   const EditNote({
     Key? key,
     this.note,
@@ -16,20 +15,30 @@ class EditNote extends StatefulWidget {
 }
 
 class _EditNoteState extends State<EditNote> {
+
+  late List<Note> notes;
+  bool isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
-  bool isImportant = false;
-  int number = 0;
-  String title = '';
-  String description = '';
+  late bool isImportant;
+  late int number;
+  late String title;
+  late String description;
 
   @override
   void initState() {
-    super.initState();
+
     if (widget.note != null) {
       isImportant = widget.note!.isImportant;
       number = widget.note!.number;
       title = widget.note!.title;
       description = widget.note!.description;
+    } else {
+
+      isImportant = false;
+      number = 0;
+      title = '';
+      description = '';
     }
   }
 
@@ -38,7 +47,7 @@ class _EditNoteState extends State<EditNote> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Text('Editar Nota'),
+        title: Text(widget.note != null ? 'Editar Nota' : 'Crear Nota'), // Cambia el título según si estás editando o creando.
       ),
       body: ListView(
         children: [
@@ -71,7 +80,7 @@ class _EditNoteState extends State<EditNote> {
               },
             ),
           ),
-          buildButton(),
+          buildButton()
         ],
       ),
     );
@@ -83,28 +92,41 @@ class _EditNoteState extends State<EditNote> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           onPrimary: Colors.white,
-          primary: Colors.teal, // Usamos siempre el color teal para editar
+          primary: Colors.teal,
         ),
-        child: Text('Guardar'),
-        onPressed: saveNote,
+        child: Text(widget.note != null ? 'Editar' : 'Guardar'),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            if (widget.note != null) {
+              updateNote();
+            } else {
+              addNotes();
+            }
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
 
-  void saveNote() async {
-    final isValid = _formKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
+  void addNotes() async {
+    final note = Note(
+      title: title,
+      isImportant: isImportant,
+      number: number,
+      description: description,
+      createdTime: DateTime.now(),
+    );
+    await NotesDatabase.instance.create(note);
+  }
 
-    final updatedNote = widget.note!.copy(
+  void updateNote() async {
+    final note = widget.note!.copy(
       title: title,
       isImportant: isImportant,
       number: number,
       description: description,
     );
-    await NotesDatabase.instance.update(updatedNote);
-
-    Navigator.of(context).pop();
+    await NotesDatabase.instance.update(note);
   }
 }

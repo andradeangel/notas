@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:notas/ui/delet_note.dart';
-
+import 'package:notas/ui/delete_note.dart';
 import '../model/note.dart';
 import '../ui/edit_note.dart';
 
@@ -52,7 +51,9 @@ class NoteCardWidget extends StatelessWidget {
                       icon: Icon(Icons.edit),
                       onPressed: () async {
                         await Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => EditNote()),
+                          MaterialPageRoute(builder: (context) => EditNote(
+                            note: note,
+                          )),
                         );
                         //refreshNotes();
                       },
@@ -61,7 +62,9 @@ class NoteCardWidget extends StatelessWidget {
                       icon: Icon(Icons.delete),
                       onPressed: () async {
                         await Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => DeletNote()),
+                          MaterialPageRoute(builder: (context) => DeleteNote(
+                            note: note,
+                          )),
                         );
                       },
                     ),

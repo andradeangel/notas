@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-
 import '../model/note.dart';
 import '../note_db/note_db.dart';
 import '../widget/nota_form_widget.dart';
 
 class AddNote extends StatefulWidget {
   final Note? note;
-
   const AddNote({
     Key? key,
     this.note,
   }) : super(key: key);
+
   @override
   State<AddNote> createState() => _AddNoteState();
 }
