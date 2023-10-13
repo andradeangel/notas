@@ -39,7 +39,7 @@ class _NotesPageState extends State<NotesPage> {
       centerTitle: true,
       backgroundColor: Colors.teal,
       title: Text(
-        'Mis Notas',
+        'Notas',
         style: TextStyle(fontSize: 24),
       ),
     ),

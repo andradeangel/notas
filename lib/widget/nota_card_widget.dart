@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:notas/ui/delet_note.dart';
 
 import '../model/note.dart';
 import '../ui/edit_note.dart';
@@ -53,14 +54,15 @@ class NoteCardWidget extends StatelessWidget {
                         await Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => EditNote()),
                         );
-
                         //refreshNotes();
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.delete),
-                      onPressed: () {
-                        // Agrega la lógica para eliminar aquí
+                      onPressed: () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => DeletNote()),
+                        );
                       },
                     ),
                   ],

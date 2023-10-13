@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../model/note.dart';
 import '../note_db/note_db.dart';
 

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../model/note.dart';
 import '../note_db/note_db.dart';
 import '../widget/nota_form_widget.dart';
-
 
 class EditNote extends StatefulWidget {
   final Note? note;
@@ -12,113 +10,101 @@ class EditNote extends StatefulWidget {
     Key? key,
     this.note,
   }) : super(key: key);
+
   @override
-  State<EditNote> createState() => _AddNoteState();
+  State<EditNote> createState() => _EditNoteState();
 }
 
-class _AddNoteState extends State<EditNote> {
-  final _fromKey = GlobalKey<FormState>();
-  late bool isImportant;
-  late int number;
-  late String title;
-  late String description;
+class _EditNoteState extends State<EditNote> {
+  final _formKey = GlobalKey<FormState>();
+  bool isImportant = false;
+  int number = 0;
+  String title = '';
+  String description = '';
 
   @override
   void initState() {
     super.initState();
-    isImportant = widget.note?.isImportant ?? false;
-    number = widget.note?.number ?? 0;
-    title = widget.note?.title ?? '';
-    description = widget.note?.description ?? '';
+    if (widget.note != null) {
+      isImportant = widget.note!.isImportant;
+      number = widget.note!.number;
+      title = widget.note!.title;
+      description = widget.note!.description;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: impleent build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Text('Create Note'),
+        title: Text('Editar Nota'),
       ),
       body: ListView(
         children: [
           Form(
-              child: NoteFormWidget(
-                isImportant: isImportant,
-                number: number,
-                title: title,
-                description: description,
-                onChangedImportant: (isImportant) {
-                  setState(() {
-                    this.isImportant = isImportant;
-                  });
-                },
-                onChangedNumber: (number) {
-                  setState(() {
-                    this.number = number;
-                  });
-                },
-                onChangedTitle: (title) {
-                  setState(() {
-                    this.title = title;
-                  });
-                },
-                onChangedDescription: (description) {
-                  setState(() {
-                    this.description = description;
-                  });
-                },
-              )),
-          buildButton()
+            key: _formKey,
+            child: NoteFormWidget(
+              isImportant: isImportant,
+              number: number,
+              title: title,
+              description: description,
+              onChangedImportant: (isImportant) {
+                setState(() {
+                  this.isImportant = isImportant;
+                });
+              },
+              onChangedNumber: (number) {
+                setState(() {
+                  this.number = number;
+                });
+              },
+              onChangedTitle: (title) {
+                setState(() {
+                  this.title = title;
+                });
+              },
+              onChangedDescription: (description) {
+                setState(() {
+                  this.description = description;
+                });
+              },
+            ),
+          ),
+          buildButton(),
         ],
       ),
     );
   }
 
   Widget buildButton() {
-    final isFormValidate = title.isNotEmpty && description.isNotEmpty;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              onPrimary: Colors.white,
-              primary: isFormValidate ? null : Colors.grey),
-          child: Text('Guardar'),
-          onPressed: isFormValidate ? addOneNota : null),
+        style: ElevatedButton.styleFrom(
+          onPrimary: Colors.white,
+          primary: Colors.teal, // Usamos siempre el color teal para editar
+        ),
+        child: Text('Guardar'),
+        onPressed: saveNote,
+      ),
     );
   }
 
-  void addOneNota() async {
-    await addNotes();
-    Navigator.of(context).pop();
-    final isValid = _fromKey.currentState!.validate();
-    if (isValid) {
-      final isUpdate = widget.note != null;
-      if (!isUpdate) {
-        await addNotes();
-      } else {
-        await updateNote();
-      }
+  void saveNote() async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      return;
     }
-  }
 
-  Future addNotes() async {
-    final note = Note(
-        title: title,
-        isImportant: true,
-        number: number,
-        description: description,
-        createdTime: DateTime.now());
-    await NotesDatabase.instance.create(note);
-  }
-
-  Future updateNote() async {
-    final note = widget.note!.copy(
+    final updatedNote = widget.note!.copy(
       title: title,
-      isImportant: true,
+      isImportant: isImportant,
       number: number,
       description: description,
     );
-    await NotesDatabase.instance.update(note);
+    await NotesDatabase.instance.update(updatedNote);
+
+    Navigator.of(context).pop();
   }
 }
